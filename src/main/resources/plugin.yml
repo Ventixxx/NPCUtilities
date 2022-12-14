@@ -1,0 +1,8 @@
+name: NPCUtilities
+version: 1.0
+main: de.ventixxx.npcutilities.NPCUtilities
+author: Ventixxx
+depend: [ProtocolLib]
+
+commands:
+  npcutilities:
