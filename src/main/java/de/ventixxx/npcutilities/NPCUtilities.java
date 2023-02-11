@@ -8,14 +8,11 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
-import com.comphenix.protocol.wrappers.WrappedWatchableObject;
-import de.ventixxx.npcutilities.commands.NPCCommand;
 import de.ventixxx.npcutilities.events.NPCInteractEvent;
 import de.ventixxx.npcutilities.listeners.InteractListener;
-import de.ventixxx.npcutilities.listeners.JoinListener;
-import de.ventixxx.npcutilities.manager.NPCManager;
 
-import de.ventixxx.npcutilities.utils.NPCData;
+import de.ventixxx.npcutilities.manager.NPCPacketManager;
+import de.ventixxx.npcutilities.utils.NPC;
 import lombok.Getter;
 
 import org.bukkit.Bukkit;
@@ -24,7 +21,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -39,7 +35,7 @@ public final class NPCUtilities extends JavaPlugin
     @Getter
     private  ProtocolManager protocolManager;
     @Getter
-    private NPCManager npcManager;
+    private NPCPacketManager npcPacketManager;
 
     @Getter
     private final String PREFIX = " §f§lNPCUtilities §8┃ ",
@@ -69,52 +65,44 @@ public final class NPCUtilities extends JavaPlugin
                 int entityID = packetContainer.getIntegers().read(0);
                 Player player = (Player) event.getPlayer();
                 EnumWrappers.EntityUseAction entityUseAction = packetContainer.getEntityUseActions().read(0);
-                NPCData npcData = getNpcManager().getNpcs().get(entityID);
-                assert npcData != null;
-                Bukkit.getPluginManager().callEvent(new NPCInteractEvent(player, npcData, entityUseAction));
+                NPC npc = getNpcPacketManager().getNpcs().get(entityID);
+                if(npc == null) return;
+                Bukkit.getPluginManager().callEvent(new NPCInteractEvent(player, npc, entityUseAction));
             }
         });
     }
 
     private void taskTimer()
     {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () ->
+        Bukkit.getScheduler().runTaskTimer(this, () ->
         {
-            assert !npcManager.getNpcs().isEmpty();
+            assert !npcPacketManager.getNpcs().isEmpty();
             Bukkit.getOnlinePlayers().forEach(player ->
             {
-                for(NPCData npcData : npcManager.getNpcs().values())
+                for(NPC npc : npcPacketManager.getNpcs().values())
                 {
 
                     // hide NPC if NPCWorld != playerWorld && player is in NPCList
-                    if((!(npcData.getLocation().getWorld().equals(player.getWorld()))) && npcData.getPlayers().contains(player))
+                    if((!(npc.getLocation().getWorld().equals(player.getWorld()))) && npc.getPlayers().contains(player))
                     {
-                        npcManager.hide(player, npcData);
+                        npcPacketManager.hide(player, npc);
                         continue;
                     }
 
                     // distance of player to NPC
-                    double distance = player.getLocation().distance(npcData.getLocation());
+                    double distance = player.getLocation().distance(npc.getLocation());
 
-                    // show NPC in range of 50 blocks | hide NPC out of range of 50 blocks
-                    if(distance <= 64 && (!npcData.getPlayers().contains(player))) npcManager.show(player, npcData);
-                    else if(distance > 64 && npcData.getPlayers().contains(player)) npcManager.hide(player, npcData);
+                    // show NPC in range of 24 blocks | hide NPC out of range of 24 blocks
+                    if(distance <= 24 && (!npc.getPlayers().contains(player))) npcPacketManager.show(player, npc);
+                    else if(distance > 24 && npc.getPlayers().contains(player)) npcPacketManager.hide(player, npc);
 
-                    if(distance <= 32 && npcData.isImitatePlayer()) sneak(player, npcData);
+                    if(distance <= 24 && npc.isImitatePlayer()) npcPacketManager.sneak(player, npc);
                     // LookAtPlayer
-                    if(distance <= 32 && npcData.isLookAtPlayer()) npcManager.lookAtPlayer(player, npcData, calculateView(player, npcData.getLocation()));
-
+                    if(distance <= 24 && npc.isLookAtPlayer()) npcPacketManager.lookAtPlayer(player, npc, calculateView(player, npc.getLocation()));
 
                 }
             });
         }, 20L, 2L);
-    }
-
-    private void sneak(Player player, NPCData npcData)
-    {
-        PacketContainer packetContainer = npcManager.create(PacketType.Play.Server.ENTITY_METADATA, npcData);
-        packetContainer.getWatchableCollectionModifier().write(0, Collections.singletonList(new WrappedWatchableObject(0, (byte) (player.isSneaking() ? 6 : 0))));
-        npcManager.send(Collections.singletonList(player));
     }
 
     private float[] calculateView(Player player, Location location)
@@ -134,10 +122,8 @@ public final class NPCUtilities extends JavaPlugin
     {
 
         PluginManager pluginManager = Bukkit.getPluginManager();
-        pluginManager.registerEvents(new JoinListener(), this);
         pluginManager.registerEvents(new InteractListener(), this);
 
-        getCommand("npcutilities").setExecutor(new NPCCommand());
 
     }
 
@@ -146,7 +132,7 @@ public final class NPCUtilities extends JavaPlugin
     {
 
         this.protocolManager = ProtocolLibrary.getProtocolManager();
-        this.npcManager = new NPCManager();
+        this.npcPacketManager = new NPCPacketManager();
 
     }
 

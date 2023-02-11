@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="8.45.1">
+<file name="D:\JetBrains\IntelliJProjects\IntruveNET-NPCUtilities\src\main\java\de\ventixxx\npcutilities\events\NPCInteractEvent.java">
+</file>
+<file name="D:\JetBrains\IntelliJProjects\IntruveNET-NPCUtilities\src\main\java\de\ventixxx\npcutilities\listeners\InteractListener.java">
+</file>
+<file name="D:\JetBrains\IntelliJProjects\IntruveNET-NPCUtilities\src\main\java\de\ventixxx\npcutilities\manager\NPCPacketManager.java">
+</file>
+<file name="D:\JetBrains\IntelliJProjects\IntruveNET-NPCUtilities\src\main\java\de\ventixxx\npcutilities\manager\NPCPackets.java">
+</file>
+<file name="D:\JetBrains\IntelliJProjects\IntruveNET-NPCUtilities\src\main\java\de\ventixxx\npcutilities\NPCUtilities.java">
+</file>
+<file name="D:\JetBrains\IntelliJProjects\IntruveNET-NPCUtilities\src\main\java\de\ventixxx\npcutilities\utils\NPC.java">
+</file>
+<file name="D:\JetBrains\IntelliJProjects\IntruveNET-NPCUtilities\src\main\java\de\ventixxx\npcutilities\utils\Profile.java">
+</file>
+</checkstyle>

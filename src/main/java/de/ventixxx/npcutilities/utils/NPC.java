@@ -1,6 +1,5 @@
 package de.ventixxx.npcutilities.utils;
 
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
 import com.comphenix.protocol.wrappers.WrappedSignedProperty;
@@ -9,15 +8,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.UUID;
 
 @Getter @Setter
-public final class NPCData
+public final class NPC
 {
 
     private UUID uuid;
@@ -27,13 +24,14 @@ public final class NPCData
     private String infoLine;
     private int infoLineID;
     private WrappedGameProfile wrappedGameProfile;
-    private ProfileData profile;
+    private Profile profile;
     private Location location;
     private Material itemInHand;
     private boolean lookAtPlayer, imitatePlayer;
     private List<Player> players;
+    private PacketContainer packetContainer;
 
-    public NPCData(int id, UUID uuid, ProfileData profile, Location location, String displayName, int displayNameID, String infoLine, int infoLineID, Material itemInHand, boolean lookAtPlayer, boolean imitatePlayer)
+    public NPC(int id, UUID uuid, Profile profile, Location location, String displayName, int displayNameID, String infoLine, int infoLineID, Material itemInHand, boolean lookAtPlayer, boolean imitatePlayer)
     {
         this.id = id;
         this.uuid = uuid;

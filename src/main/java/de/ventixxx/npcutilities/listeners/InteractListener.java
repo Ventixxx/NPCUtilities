@@ -1,22 +1,18 @@
 package de.ventixxx.npcutilities.listeners;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.PacketContainer;
 import de.ventixxx.npcutilities.NPCUtilities;
-import de.ventixxx.npcutilities.manager.NPCManager;
-import de.ventixxx.npcutilities.utils.NPCData;
+import de.ventixxx.npcutilities.manager.NPCPacketManager;
+import de.ventixxx.npcutilities.utils.NPC;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import java.util.Collections;
-
 public final class InteractListener implements Listener
 {
 
-    final NPCManager npcManager = NPCUtilities.getNpcUtilities().getNpcManager();
+    final NPCPacketManager npcPacketManager = NPCUtilities.getNpcUtilities().getNpcPacketManager();
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event)
@@ -33,23 +29,22 @@ public final class InteractListener implements Listener
     {
 
         /*
-           get all NPCData's
+           get all npc's
            filter if distance from player to npc <= 25 blocks
            filter if npc should imitate player (true)
          */
 
-        npcManager.getNpcs()
+        npcPacketManager.getNpcs()
                 .values()
                 .stream()
-                .filter(npcData -> player.getLocation().distance(npcData.getLocation()) <= 25)
-                .filter(NPCData::isImitatePlayer)
-                .forEach(npcData ->
+                .filter(npc -> player.getLocation().distance(npc.getLocation()) <= 25)
+                .filter(NPC::isImitatePlayer)
+                .forEach(npc ->
                 {
-                    // swing main arm packet (Protocollib)
-                    PacketContainer packetContainer = npcManager.create(PacketType.Play.Server.ANIMATION, npcData);
-                    packetContainer.getIntegers().write(1, 0);
-                    npcManager.send(Collections.singletonList(player));
+                    // swing main arm
+                    npcPacketManager.swingMainArm(player, npc);
                 });
+
     }
 
 

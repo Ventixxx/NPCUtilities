@@ -1,7 +1,7 @@
 package de.ventixxx.npcutilities.events;
 
 import com.comphenix.protocol.wrappers.EnumWrappers;
-import de.ventixxx.npcutilities.utils.NPCData;
+import de.ventixxx.npcutilities.utils.NPC;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -12,14 +12,14 @@ public final class NPCInteractEvent extends Event
     private static final HandlerList handlers = new HandlerList();
 
     private final Player player;
-    private final NPCData npcData;
-    private final EnumWrappers.EntityUseAction entityUseAction;
+    private final NPC npc;
+    private final String entityUseAction;
 
-    public NPCInteractEvent(Player player, NPCData npcData, EnumWrappers.EntityUseAction entityUseAction)
+    public NPCInteractEvent(Player player, NPC npc, EnumWrappers.EntityUseAction entityUseAction)
     {
         this.player = player;
-        this.npcData = npcData;
-        this.entityUseAction = entityUseAction;
+        this.npc = npc;
+        this.entityUseAction = entityUseAction.toString();
     }
 
     public Player getPlayer()
@@ -27,12 +27,12 @@ public final class NPCInteractEvent extends Event
         return player;
     }
 
-    public NPCData getNpcData()
+    public NPC getnpc()
     {
-        return npcData;
+        return npc;
     }
 
-    public EnumWrappers.EntityUseAction getEntityUseAction()
+    public String getEntityUseAction()
     {
         return entityUseAction;
     }

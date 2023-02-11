@@ -10,10 +10,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.UUID;
 
 @Getter @Setter
-public final class ProfileData
+public final class Profile
 {
 
     private final String UUID_OF_NAME = "https://api.mojang.com/users/profiles/minecraft/%name%";
@@ -23,7 +22,7 @@ public final class ProfileData
     private String uuid;
 
 
-    public ProfileData(String name)
+    public Profile(String name)
     {
         this.name = name;
 
